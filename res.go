@@ -43,6 +43,13 @@ func resp(ctx *gin.Context, code int, msg string, data ...interface{}) {
 		resp.Data = &EmptyData{}
 	}
 
+	//防止Xss攻击
+	w := ctx.Writer
+	w.Header().Set("Content-Type", "text/javascript")
+	w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type") //header的类型
+	w.Header().Set("content-type", "application/json")             //返回数据格式是json
+
 	ctx.JSON(http.StatusOK, resp)
 }
 
