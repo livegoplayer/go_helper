@@ -1,4 +1,4 @@
-module go_helper
+module github.com/livegoplayer/go_helper
 
 go 1.14
 
