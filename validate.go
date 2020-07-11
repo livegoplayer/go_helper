@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"fmt"
 	"reflect"
 	"regexp"
 	"sync"
@@ -15,6 +16,17 @@ type defaultValidator struct {
 }
 
 var ValidatorV10 binding.StructValidator = &defaultValidator{}
+
+func init() {
+	v, ok := ValidatorV10.Engine().(*validator.Validate)
+	if ok {
+		// 自定义验证方法 todo more
+		err := v.RegisterValidation("checkMobile", CheckPassword)
+		if err != nil {
+			fmt.Print(err.Error())
+		}
+	}
+}
 
 func (v *defaultValidator) ValidateStruct(obj interface{}) error {
 
