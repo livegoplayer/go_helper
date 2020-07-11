@@ -2,6 +2,7 @@ package helper
 
 import (
 	"reflect"
+	"regexp"
 	"sync"
 
 	"github.com/gin-gonic/gin/binding"
@@ -52,4 +53,12 @@ func kindOfData(data interface{}) reflect.Kind {
 		valueType = value.Elem().Kind()
 	}
 	return valueType
+}
+
+func CheckPassword(fl validator.FieldLevel) bool {
+	value := fl.Field().String()
+	if ok, _ := regexp.MatchString("^$", value); !ok {
+		return false
+	}
+	return true
 }
