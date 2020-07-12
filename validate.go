@@ -7,7 +7,10 @@ import (
 	"sync"
 
 	"github.com/gin-gonic/gin/binding"
+	zhongwen "github.com/go-playground/locales/zh"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
+	"github.com/go-playground/validator/v10/translations/zh"
 )
 
 type defaultValidator struct {
@@ -16,17 +19,6 @@ type defaultValidator struct {
 }
 
 var ValidatorV10 binding.StructValidator = &defaultValidator{}
-
-func init() {
-	v, ok := ValidatorV10.Engine().(*validator.Validate)
-	if ok {
-		// 自定义验证方法 todo more
-		err := v.RegisterValidation("checkMobile", CheckPassword)
-		if err != nil {
-			fmt.Print(err.Error())
-		}
-	}
-}
 
 func (v *defaultValidator) ValidateStruct(obj interface{}) error {
 
@@ -52,7 +44,20 @@ func (v *defaultValidator) lazyinit() {
 		v.validate = validator.New()
 		v.validate.SetTagName("validate")
 
+		zhs := zhongwen.New()
+		uni := ut.New(zhs, zhs)
+		trans, _ := uni.GetTranslator("zh")
+		err := zh.RegisterDefaultTranslations(v.validate, trans)
+		if err != nil {
+			panic(err)
+		}
+
 		// add any custom validations etc. here
+		// 自定义验证方法 todo more
+		err = v.validate.RegisterValidation("checkMobile", CheckPassword)
+		if err != nil {
+			fmt.Print(err.Error())
+		}
 	})
 }
 
