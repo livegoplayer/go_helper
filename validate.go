@@ -21,6 +21,13 @@ type defaultValidator struct {
 }
 
 var ValidatorV10 binding.StructValidator = &defaultValidator{}
+var trans ut.Translator
+
+func init() {
+	zhs := zhongwen.New()
+	uni := ut.New(zhs, zhs)
+	trans, _ = uni.GetTranslator("zh")
+}
 
 func (v *defaultValidator) ValidateStruct(obj interface{}) error {
 
@@ -57,9 +64,6 @@ func (v *defaultValidator) lazyinit() {
 		v.validate = validator.New()
 		v.validate.SetTagName("validate")
 
-		zhs := zhongwen.New()
-		uni := ut.New(zhs, zhs)
-		trans, _ := uni.GetTranslator("zh")
 		err := zh.RegisterDefaultTranslations(v.validate, trans)
 		if err != nil {
 			panic(err)
