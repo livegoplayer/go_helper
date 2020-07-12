@@ -1,9 +1,11 @@
 package helper
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"regexp"
+	"strings"
 	"sync"
 
 	"github.com/gin-gonic/gin/binding"
@@ -27,7 +29,9 @@ func (v *defaultValidator) ValidateStruct(obj interface{}) error {
 		v.lazyinit()
 
 		if err := v.validate.Struct(obj); err != nil {
-			return error(err)
+			errs := err.(validator.ValidationErrors)
+			//自动翻译
+			return errors.New(Translate(errs))
 		}
 	}
 
@@ -37,6 +41,15 @@ func (v *defaultValidator) ValidateStruct(obj interface{}) error {
 func (v *defaultValidator) Engine() interface{} {
 	v.lazyinit()
 	return v.validate
+}
+
+func Translate(errs validator.ValidationErrors) string {
+	var errList []string
+	for _, e := range errs {
+		// can translate each error one at a time.
+		errList = append(errList, e.Translate(trans))
+	}
+	return strings.Join(errList, "|")
 }
 
 func (v *defaultValidator) lazyinit() {
