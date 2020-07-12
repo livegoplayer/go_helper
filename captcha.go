@@ -42,7 +42,7 @@ func MakeCaptcha(s string) (captchaId string, captchaImg string, err error) {
 }
 
 func VerifyCaptchaWithId(captchaId string, answer string) bool {
-	return captchaMaker.Verify(captchaId, answer, true)
+	return captchaMaker.Store.Verify(captchaId, answer, true)
 }
 
 // memoryStore is an internal store for captcha ids and their values.
@@ -82,6 +82,6 @@ func (s *redisStore) Get(id string, clear bool) (value string) {
 		s.redisClient.Del(prefix + id)
 	}
 
-	value = v.String()
+	value = v.Val()
 	return
 }
