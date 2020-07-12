@@ -45,6 +45,7 @@ func resp(ctx *gin.Context, code int, msg string, data ...interface{}) {
 	// 设置返回格式是json
 
 	ctx.JSON(http.StatusOK, resp)
+	ctx.Abort()
 }
 
 //负责调用panic触发外部的panic处理函数
