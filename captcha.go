@@ -79,10 +79,11 @@ func (s *redisStore) Verify(id, answer string, clear bool) bool {
 
 func (s *redisStore) Get(id string, clear bool) (value string) {
 	v := s.redisClient.Get(prefix + id)
+	value = strings.ToUpper(v.Val())
+
 	if clear {
 		s.redisClient.Del(prefix + id)
 	}
 
-	value = strings.ToUpper(v.Val())
 	return
 }
