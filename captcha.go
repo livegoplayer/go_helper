@@ -4,6 +4,7 @@ package helper
 
 import (
 	"image/color"
+	"strings"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -68,12 +69,12 @@ func NewRedisStore(expiration time.Duration) captcha.Store {
 }
 
 func (s *redisStore) Set(id string, value string) {
-	s.redisClient.Set(prefix+id, value, s.expiration)
+	s.redisClient.Set(prefix+id, strings.ToUpper(value), s.expiration)
 }
 
 func (s *redisStore) Verify(id, answer string, clear bool) bool {
-	v := s.Get(prefix+id, clear)
-	return v == answer
+	v := s.Get(id, clear)
+	return v == strings.ToUpper(answer)
 }
 
 func (s *redisStore) Get(id string, clear bool) (value string) {
@@ -82,6 +83,6 @@ func (s *redisStore) Get(id string, clear bool) (value string) {
 		s.redisClient.Del(prefix + id)
 	}
 
-	value = v.Val()
+	value = strings.ToUpper(v.Val())
 	return
 }
