@@ -9,7 +9,6 @@ import (
 
 type MyCustomClaims struct {
 	UserSession
-	host string
 	jwt.StandardClaims
 }
 
@@ -23,14 +22,13 @@ type UserSession struct {
 	UpdateDatetime    string           `json:"update_datetime"`
 }
 
-func CreateToken(userSession *UserSession, host string) (tokenStr string, err error) {
+func CreateToken(userSession *UserSession) (tokenStr string, err error) {
 
 	mySigningKey := []byte("AllYourBase")
 
 	// Create the Claims
 	claims := MyCustomClaims{
 		*userSession,
-		host,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), //过期时间是两个小时
 			IssuedAt:  time.Now().Unix(),
@@ -60,12 +58,6 @@ func ParseToken(tokenStr string, host string) (claims MyCustomClaims, err error)
 		//检查jwt token是否过期
 		if claimsP.IssuedAt+claimsP.ExpiresAt > time.Now().Unix() {
 			err = errors.New("jwt过期")
-			return
-		}
-
-		//检查jwt token是否过期
-		if claimsP.host != host {
-			err = errors.New("host错误")
 			return
 		}
 
