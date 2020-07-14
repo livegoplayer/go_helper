@@ -44,7 +44,7 @@ func CreateToken(userSession *UserSession) (tokenStr string, err error) {
 	return
 }
 
-func ParseToken(tokenStr string, host string) (claims MyCustomClaims, err error) {
+func ParseToken(tokenStr string) (claims MyCustomClaims, err error) {
 	mySigningKey := []byte("AllYourBase")
 
 	token, err := jwt.ParseWithClaims(tokenStr, &MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
