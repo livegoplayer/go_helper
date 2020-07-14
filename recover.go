@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 // 错误处理的结构体
@@ -93,8 +94,17 @@ func Cors() gin.HandlerFunc {
 		} else {
 			headerStr = "access-control-allow-origin, access-control-allow-headers"
 		}
+
+		//获取配置文件中的host
+		var accessControlAllowOrigin string
+		host := viper.GetString("host")
+		port := viper.GetString("port")
+		if host == "" || port == "" {
+			accessControlAllowOrigin = "*"
+		}
+		accessControlAllowOrigin = "http://" + host + port
 		if origin != "" {
-			c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+			c.Writer.Header().Set("Access-Control-Allow-Origin", accessControlAllowOrigin)
 			c.Header("Access-Control-Allow-Origin", "*")                                       // 这是允许访问所有域
 			c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE,UPDATE") //服务器支持的所有跨域请求的方法,为了避免浏览次请求的多次'预检'请求
 			//  header的类型
@@ -103,8 +113,8 @@ func Cors() gin.HandlerFunc {
 			c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers,Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma,FooBar") // 跨域关键设置 让浏览器可以解析
 			c.Header("Access-Control-Max-Age", "172800")                                                                                                                                                           // 缓存请求信息 单位为秒
 			//允许设置cookie
-			c.Header("Access-Control-Allow-Credentials", "false") //  跨域请求是否需要带cookie信息 默认设置为true
-			c.Set("content-type", "application/json")             // 设置返回格式是json
+			c.Header("Access-Control-Allow-Credentials", "true") //  跨域请求是否需要带cookie信息 默认设置为true
+			c.Set("content-type", "application/json")            // 设置返回格式是json
 		}
 
 		//放行所有OPTIONS方法
