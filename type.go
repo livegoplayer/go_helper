@@ -1,10 +1,17 @@
 package helper
 
 import (
+	"strconv"
 	"unsafe"
 )
 
 func String(unknownVal interface{}) string {
+
+	//如果是数字
+	if intVal, ok := unknownVal.(int); ok {
+		return strconv.Itoa(intVal)
+	}
+
 	var stringVal, ok = unknownVal.(string)
 
 	if ok {

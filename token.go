@@ -56,12 +56,12 @@ func ParseToken(tokenStr string) (claims MyCustomClaims, err error) {
 
 	if claimsP, ok := token.Claims.(*MyCustomClaims); ok && token.Valid {
 		//检查jwt token是否过期
-		if claimsP.IssuedAt+claimsP.ExpiresAt > time.Now().Unix() {
+		claims = *claimsP
+		if claimsP.ExpiresAt < time.Now().Unix() {
 			err = errors.New("jwt过期")
 			return
 		}
 
-		claims = *claimsP
 		return
 	} else {
 		err = errors.New("jwt解析错误")
