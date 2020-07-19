@@ -19,12 +19,18 @@ type EmptyData struct {
 
 // ErrorResp 错误返回值
 func ErrorResp(ctx *gin.Context, code int, msg string, data ...interface{}) {
-	resp(ctx, code, msg, data...)
+	//如果isabort 组织输出
+	if !ctx.IsAborted() {
+		resp(ctx, code, msg, data...)
+	}
 }
 
 // SuccessResp 正确返回值
 func SuccessResp(ctx *gin.Context, msg string, data ...interface{}) {
-	resp(ctx, 0, msg, data...)
+	//如果isabort 组织输出
+	if !ctx.IsAborted() {
+		resp(ctx, 0, msg, data...)
+	}
 }
 
 // resp 返回
@@ -45,7 +51,7 @@ func resp(ctx *gin.Context, code int, msg string, data ...interface{}) {
 	// 设置返回格式是json
 
 	ctx.JSON(http.StatusOK, resp)
-	ctx.Next()
+	ctx.Abort()
 }
 
 //负责调用panic触发外部的panic处理函数
