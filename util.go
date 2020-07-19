@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"mime/multipart"
 	"reflect"
+	"strings"
 	"time"
 	"unsafe"
 
@@ -176,4 +177,9 @@ func Substring(source string, start int, end int) string {
 	}
 
 	return string(r[start:end])
+}
+
+//获取两个字符串中间的字符串
+func GetSubStringBetween(source string, startString string, endString string) string {
+	return Substring(source, strings.Index(source, startString)+strings.Count(startString, "")-1, strings.Index(source, endString))
 }
