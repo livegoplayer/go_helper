@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	mylogger "github.com/livegoplayer/go_logger"
 	"github.com/spf13/viper"
 )
 
@@ -66,18 +67,21 @@ func ErrHandler() gin.HandlerFunc {
 				//如果是通过本文件定义的Error，如果是调试模式，则输出所有的错误内容，否则，只输出自定义内容
 				if e, ok := err.(*Error); ok {
 					Err = e
-					if gin.IsDebugging() {
+					if !gin.IsDebugging() {
 						msg := GetSubStringBetween(Err.Msg, " error:", "")
 						Err.Msg = msg
 					}
 				} else if e, ok := err.(error); ok {
-					if gin.IsDebugging() {
+					if !gin.IsDebugging() {
 						Err = ServerError
 					} else {
 						Err = OtherError(e.Error())
 					}
+					//这种程度的error, 输出到数据库
+					mylogger.Error(e.Error())
 				} else {
 					Err = ServerError
+					mylogger.Error(Err.Error())
 				}
 				// 记录一个错误的日志
 				c.JSON(Err.StatusCode, Err)
