@@ -46,6 +46,7 @@ func NewError(statusCode, Code int, msg string) *Error {
 func HandleNotFound(c *gin.Context) {
 	err := NotFound
 	c.JSON(err.StatusCode, err)
+	c.Abort()
 	return
 }
 
@@ -53,6 +54,7 @@ func HandleNotFound(c *gin.Context) {
 func HandleServerError(c *gin.Context) {
 	err := ServerError
 	c.JSON(err.StatusCode, err)
+	c.Abort()
 	return
 }
 
@@ -61,16 +63,25 @@ func ErrHandler() gin.HandlerFunc {
 		defer func() {
 			if err := recover(); err != nil {
 				var Err *Error
+				//如果是通过本文件定义的Error，如果是调试模式，则输出所有的错误内容，否则，只输出自定义内容
 				if e, ok := err.(*Error); ok {
 					Err = e
+					if gin.IsDebugging() {
+						msg := GetSubStringBetween(Err.Msg, " error:", "")
+						Err.Msg = msg
+					}
 				} else if e, ok := err.(error); ok {
-					Err = OtherError(e.Error())
+					if gin.IsDebugging() {
+						Err = ServerError
+					} else {
+						Err = OtherError(e.Error())
+					}
 				} else {
 					Err = ServerError
 				}
 				// 记录一个错误的日志
 				c.JSON(Err.StatusCode, Err)
-				fmt.Print()
+				c.Abort()
 				return
 			}
 		}()

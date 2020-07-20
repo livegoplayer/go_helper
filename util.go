@@ -183,5 +183,8 @@ func Substring(source string, start int, end int) string {
 func GetSubStringBetween(source string, startString string, endString string) string {
 	//先拿到第一个字符串到最后的子字符串
 	source = Substring(source, strings.Index(source, startString)+strings.Count(startString, "")-1, strings.Count(source, "")-1)
+	if endString == "" {
+		return source
+	}
 	return Substring(source, 0, strings.Index(source, endString))
 }
