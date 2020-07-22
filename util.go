@@ -8,6 +8,7 @@ import (
 	"io"
 	"math/rand"
 	"mime/multipart"
+	"path"
 	"reflect"
 	"strings"
 	"time"
@@ -187,4 +188,14 @@ func GetSubStringBetween(source string, startString string, endString string) st
 		return source
 	}
 	return Substring(source, 0, strings.Index(source, endString))
+}
+
+//获取文件后缀名
+func GetFileExtName(fileName string) string {
+	ext := path.Ext(fileName)
+	if ext == "" {
+		return ""
+	} else {
+		return ext[1:]
+	}
 }
