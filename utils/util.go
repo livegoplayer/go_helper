@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
-	"path/filepath"
 	"reflect"
 	"time"
 
@@ -28,9 +27,6 @@ func StrMd5(str string) string {
 	return md5str
 }
 
-func PathToCommon(str string) string {
-	return filepath.FromSlash(str)
-}
 func InArray(val interface{}, array interface{}) (exists bool, index int) {
 	exists = false
 	index = -1
