@@ -2,6 +2,7 @@ package utils
 
 import (
 	"os"
+	"path"
 	"path/filepath"
 )
 
@@ -21,4 +22,9 @@ func Exists(path string) bool {
 		return false
 	}
 	return true
+}
+
+func GetFileExtName(str string) string {
+	fileSuffix := path.Ext(str)
+	return fileSuffix
 }
