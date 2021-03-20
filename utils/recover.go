@@ -1,4 +1,4 @@
-package helper
+package utils
 
 //处理全局panic的返回值，重写gin.Recover中间件的内容
 import (

@@ -1,4 +1,4 @@
-package helper
+package utils
 
 import (
 	"crypto/md5"
@@ -51,24 +51,34 @@ func InArray(val interface{}, array interface{}) (exists bool, index int) {
 	return
 }
 
-func JsonEncode(data interface{}) []byte {
+func JsonEncode(data interface{}) string {
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	jsonByte, err := json.Marshal(&data)
 	if err != nil {
 		fmt.Printf("json加密出错:" + err.Error())
 	}
-	return jsonByte
+	return BytesToString(jsonByte[:])
 }
 
 //解析valjson对象
-func JsonDecode(val []byte, data interface{}) interface{} {
+func JsonDecode(val string, data interface{}) interface{} {
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 	//把结果放入val
-	err := json.Unmarshal(val, &data)
+	err := json.Unmarshal(StringToBytes(val), &data)
 	if err != nil {
 		fmt.Printf("json解析出错:" + err.Error())
 	}
 	return data
+}
+
+func JsonDecodeToMap(val string) map[string]interface{} {
+	var json = jsoniter.ConfigCompatibleWithStandardLibrary
+	var mapResult map[string]interface{}
+	err := json.Unmarshal([]byte(val), &mapResult)
+	if err != nil {
+		fmt.Printf("json解析出错:" + err.Error())
+	}
+	return mapResult
 }
 
 //直接获取json中的值
