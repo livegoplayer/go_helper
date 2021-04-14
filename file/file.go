@@ -5,17 +5,19 @@ import (
 	"strings"
 )
 
+type FileType int64
+
 const (
-	FOLDER = 1
-	IMG    = 2
-	VIDEO  = 3
-	OTHER  = 4
-	PDF    = 5
-	OFFICE = 6
-	TXT    = 7
+	FOLDER FileType = 1
+	IMG    FileType = 2
+	VIDEO  FileType = 3
+	OTHER  FileType = 4
+	PDF    FileType = 5
+	OFFICE FileType = 6
+	TXT    FileType = 7
 )
 
-func GetFileTypeByName(filename string) int {
+func GetFileTypeByName(filename string) FileType {
 	if match, _ := regexp.MatchString("(.*)\\.(jpg|bmp|gif|ico|pcx|jpeg|tif|png|raw|tga)", strings.ToLower(filename)); match {
 		return IMG
 	}
