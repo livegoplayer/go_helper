@@ -15,10 +15,10 @@ type MyCustomClaims struct {
 
 //一个聚合的数据结构
 type UserSession struct {
-	Uid               int32            `json:"uid"`
+	Uid               int64            `json:"uid"`
 	UserName          string           `json:"username"`
-	UserRoleList      map[int32]string `json:"user_role_list"`
-	UserAuthorityList map[int32]string `json:"user_authority_list"`
+	UserRoleList      map[int64]string `json:"user_role_list"`
+	UserAuthorityList map[int64]string `json:"user_authority_list"`
 	AddDatetime       string           `json:"add_datetime"`
 	UpdateDatetime    string           `json:"update_datetime"`
 }
