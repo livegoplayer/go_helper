@@ -72,3 +72,7 @@ func LoadEnv() {
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
 }
+
+func IsDebug() bool {
+	return viper.GetBool("APP_DEBUG")
+}
