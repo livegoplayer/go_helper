@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"reflect"
 	"strconv"
-	"unsafe"
 )
 
 func String(unknownVal interface{}) string {
@@ -27,10 +26,10 @@ func Int32(unknownVal interface{}) int32 {
 }
 
 func BytesToString(b []byte) string {
-	return *(*string)(unsafe.Pointer(&b))
+	return string(b)
 }
 func StringToBytes(s string) []byte {
-	return *(*[]byte)(unsafe.Pointer(&s))
+	return []byte(s)
 }
 
 // 判断该值是否为表示空值，0，"0"， false, "false"等
