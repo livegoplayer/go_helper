@@ -26,5 +26,9 @@ func Exists(path string) bool {
 
 func GetFileExtName(str string) string {
 	fileSuffix := path.Ext(str)
-	return fileSuffix
+	if len(fileSuffix) > 0 {
+		return fileSuffix[1:]
+	} else {
+		return ""
+	}
 }
