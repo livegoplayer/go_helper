@@ -14,11 +14,11 @@ import (
 
 var captchaMaker *captcha.Captcha
 
-func init() {
+func InitCaptcha(redisOptions redis.Options) {
 
 	//设置回值二维码的size
-	driver := captcha.NewDriverString(60, 240, 10, captcha.OptionShowHollowLine, 6, "123123", &color.RGBA{R: 255, G: 255, B: 255, A: 255}, nil).ConvertFonts()
-	redisStore := NewRedisStore(time.Hour * 24)
+	driver := captcha.NewDriverString(60, 240, 10, captcha.OptionShowHollowLine, 6, "123123", &color.RGBA{R: 255, G: 255, B: 255, A: 255}, nil, nil).ConvertFonts()
+	redisStore := NewRedisStore(time.Hour*24, redisOptions)
 	captchaMaker = &captcha.Captcha{
 		Driver: driver,
 		Store:  redisStore,
@@ -54,13 +54,9 @@ type redisStore struct {
 
 var prefix = "go_us_redis_"
 
-func NewRedisStore(expiration time.Duration) captcha.Store {
+func NewRedisStore(expiration time.Duration, options redis.Options) captcha.Store {
 	// 根据redis配置初始化一个客户端
-	redisClient := redis.NewClient(&redis.Options{
-		Addr:     "139.224.132.234:6379", // redis地址
-		Password: "myredis",              // redis密码，没有则留空
-		DB:       1,                      // 默认数据库，默认是0
-	})
+	redisClient := redis.NewClient(&options)
 
 	redisStore := redisStore{}
 	redisStore.expiration = expiration
@@ -68,8 +64,9 @@ func NewRedisStore(expiration time.Duration) captcha.Store {
 	return &redisStore
 }
 
-func (s *redisStore) Set(id string, value string) {
+func (s *redisStore) Set(id string, value string) error {
 	s.redisClient.Set(prefix+id, strings.ToUpper(value), s.expiration)
+	return nil
 }
 
 func (s *redisStore) Verify(id, answer string, clear bool) bool {
