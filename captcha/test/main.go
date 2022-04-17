@@ -10,5 +10,4 @@ func main() {
 	id, _, _ := captcha.MakeCaptcha("123213")
 	res := captcha.VerifyCaptchaWithId(id, "123213")
 	print(res)
-
 }
