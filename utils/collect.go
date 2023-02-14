@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	"github.com/chenhg5/collection"
-	"github.com/fatih/structs"
+	"github.com/livegoplayer/go_helper/structs_map"
 	"reflect"
 )
 
@@ -17,13 +17,9 @@ type dataList = []map[string]interface{}
 
 type DefaultFunc = func(map[string]interface{}) interface{}
 
-func NewCollect(argus ...interface{}) Collection {
+func NewCollect(st interface{}, tagName string) Collection {
 	var v interface{}
-	if len(argus) == 1 {
-		v = argus[0]
-	} else {
-		v = make([]map[string]interface{}, 0)
-	}
+	v = st
 	mapArray, ok := v.(dataList)
 	if !ok {
 		slice := reflect.ValueOf(v)
@@ -31,16 +27,16 @@ func NewCollect(argus ...interface{}) Collection {
 			slice = slice.Elem()
 		}
 		for i := 0; i < slice.Len(); i++ {
-			mapArray = append(mapArray, structs.Map(slice.Index(i).Addr().Elem().Interface()))
+			mapArray = append(mapArray, structs_map.NewStructMap(slice.Index(i).Addr().Elem().Interface(), tagName).Map())
 		}
 	}
 	return Collection{collection.Collect(mapArray)}
 }
 
-func (c Collection) WithGroupBy(asKey string, list dataList, localKey string, argus ...interface{}) Collection {
+func (c Collection) WithGroupBy(asKey string, list dataList, localKey, localKeyTagName string, argus ...interface{}) Collection {
 	foreign, defVal := defaultArgus(argus, localKey, dataList{})
 	srcData := c.ToMapArray()
-	withData := NewCollect(list).GroupBy(foreign).ToMap()
+	withData := NewCollect(list, localKeyTagName).GroupBy(foreign).ToMap()
 	for _, item := range srcData {
 		v, ok := DeepGet(item, localKey)
 		if ok {
@@ -57,13 +53,13 @@ func (c Collection) WithGroupBy(asKey string, list dataList, localKey string, ar
 			item[asKey] = defVal
 		}
 	}
-	return NewCollect(srcData)
+	return NewCollect(srcData, "")
 }
 
-func (c Collection) WithKeyBy(asKey string, list dataList, localKey string, argus ...interface{}) Collection {
+func (c Collection) WithKeyBy(asKey string, list dataList, localKey, localKeyTagName string, argus ...interface{}) Collection {
 	foreign, defVal := defaultArgus(argus, localKey, nil)
 	srcData := c.ToMapArray()
-	withData := NewCollect(list).KeyBy(foreign).ToMap()
+	withData := NewCollect(list, localKeyTagName).KeyBy(foreign).ToMap()
 	for _, item := range srcData {
 		v, ok := DeepGet(item, localKey)
 		if ok {
@@ -80,13 +76,13 @@ func (c Collection) WithKeyBy(asKey string, list dataList, localKey string, argu
 			item[asKey] = defVal
 		}
 	}
-	return NewCollect(srcData)
+	return NewCollect(srcData, "")
 }
 
-func (c Collection) WithPut(asKey string, fromKey string, list dataList, localKey string, argus ...interface{}) Collection {
+func (c Collection) WithPut(asKey string, fromKey string, list dataList, localKey, localKeyTagName string, argus ...interface{}) Collection {
 	foreign, defVal := defaultArgus(argus, localKey, "")
 	srcData := c.ToMapArray()
-	withData := NewCollect(list).KeyBy(foreign).ToMap()
+	withData := NewCollect(list, localKeyTagName).KeyBy(foreign).ToMap()
 	for _, item := range srcData {
 		v, ok := DeepGet(item, localKey)
 		if ok {
@@ -105,7 +101,7 @@ func (c Collection) WithPut(asKey string, fromKey string, list dataList, localKe
 			DeepMustSet(item, asKey, defVal)
 		}
 	}
-	return NewCollect(srcData)
+	return NewCollect(srcData, "")
 }
 
 func (c Collection) WithConst(asKey string, val interface{}) Collection {
@@ -113,7 +109,7 @@ func (c Collection) WithConst(asKey string, val interface{}) Collection {
 	for _, item := range srcData {
 		item[asKey] = val
 	}
-	return NewCollect(srcData)
+	return NewCollect(srcData, "")
 }
 
 func (c Collection) EachPut(asKey string, cb func(map[string]interface{}) interface{}) Collection {
@@ -121,17 +117,17 @@ func (c Collection) EachPut(asKey string, cb func(map[string]interface{}) interf
 	for _, item := range srcData {
 		item[asKey] = cb(item)
 	}
-	return NewCollect(srcData)
+	return NewCollect(srcData, "")
 }
 
 func (c Collection) One(cb func(idx int, t map[string]interface{}) bool) Collection {
 	srcData := c.ToMapArray()
 	for i, item := range srcData {
 		if cb(i, item) {
-			return NewCollect([]H{item})
+			return NewCollect([]H{item}, "")
 		}
 	}
-	return NewCollect()
+	return NewCollect(struct{}{}, "")
 }
 
 func (c Collection) Each(cb func(idx int, t map[string]interface{})) Collection {
@@ -139,7 +135,7 @@ func (c Collection) Each(cb func(idx int, t map[string]interface{})) Collection 
 	for i, item := range srcData {
 		cb(i, item)
 	}
-	return NewCollect(srcData)
+	return NewCollect(srcData, "")
 }
 
 func defaultArgus(argus []interface{}, foreign string, val interface{}) (string, interface{}) {

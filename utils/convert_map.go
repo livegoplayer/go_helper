@@ -107,11 +107,11 @@ func MapKeys(item map[string]interface{}) []string {
 // ToMap uses tags on struct fields to decide which fields to add to the
 // returned map.
 func ToMap(in interface{}) map[string]interface{} {
-	return NewCollect(in).ToMap()
+	return NewCollect(in, "json").ToMap()
 }
 
 func ToMapArray(in interface{}) []map[string]interface{} {
-	return NewCollect(in).ToMapArray()
+	return NewCollect(in, "json").ToMapArray()
 }
 
 func DeepGetMust(m map[string]interface{}, key string) interface{} {
