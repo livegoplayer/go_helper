@@ -1,7 +1,7 @@
 package stl
 
 import (
-	muid "daodao-go/infrastructure/crosscutting/extensionMethod"
+	"github.com/google/uuid"
 	"github.com/livegoplayer/go_helper/utils"
 	"math/rand"
 )
@@ -15,7 +15,8 @@ type Random struct {
 }
 
 func NewRandom() *Random {
-	return NewRandomBySeed(utils.GetHashCode(muid.NewMuid().Hex()))
+	id, _ := uuid.NewUUID()
+	return NewRandomBySeed(utils.GetHashCode(string(id[:])))
 }
 
 func NewRandomBySeed(seed int64) *Random {

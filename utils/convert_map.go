@@ -3,7 +3,6 @@ package utils
 import (
 	"encoding/json"
 	"github.com/fatih/structs"
-	"github.com/livegoplayer/go_helper/collect"
 	"github.com/mitchellh/mapstructure"
 	"reflect"
 	"strings"
@@ -108,11 +107,11 @@ func MapKeys(item map[string]interface{}) []string {
 // ToMap uses tags on struct fields to decide which fields to add to the
 // returned map.
 func ToMap(in interface{}) map[string]interface{} {
-	return collect.NewCollect(in).ToMap()
+	return NewCollect(in).ToMap()
 }
 
 func ToMapArray(in interface{}) []map[string]interface{} {
-	return collect.NewCollect(in).ToMapArray()
+	return NewCollect(in).ToMapArray()
 }
 
 func DeepGetMust(m map[string]interface{}, key string) interface{} {

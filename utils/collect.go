@@ -1,10 +1,9 @@
-package collect
+package utils
 
 import (
 	"fmt"
 	"github.com/chenhg5/collection"
 	"github.com/fatih/structs"
-	"github.com/livegoplayer/go_helper/utils"
 	"reflect"
 )
 
@@ -43,7 +42,7 @@ func (c Collection) WithGroupBy(asKey string, list dataList, localKey string, ar
 	srcData := c.ToMapArray()
 	withData := NewCollect(list).GroupBy(foreign).ToMap()
 	for _, item := range srcData {
-		v, ok := utils.DeepGet(item, localKey)
+		v, ok := DeepGet(item, localKey)
 		if ok {
 			tv, ok := withData[fmt.Sprintf("%v", v)]
 			if ok {
@@ -66,7 +65,7 @@ func (c Collection) WithKeyBy(asKey string, list dataList, localKey string, argu
 	srcData := c.ToMapArray()
 	withData := NewCollect(list).KeyBy(foreign).ToMap()
 	for _, item := range srcData {
-		v, ok := utils.DeepGet(item, localKey)
+		v, ok := DeepGet(item, localKey)
 		if ok {
 			tv, ok := withData[fmt.Sprintf("%v", v)]
 			if ok {
@@ -89,21 +88,21 @@ func (c Collection) WithPut(asKey string, fromKey string, list dataList, localKe
 	srcData := c.ToMapArray()
 	withData := NewCollect(list).KeyBy(foreign).ToMap()
 	for _, item := range srcData {
-		v, ok := utils.DeepGet(item, localKey)
+		v, ok := DeepGet(item, localKey)
 		if ok {
 			tv, ok := withData[fmt.Sprintf("%v", v)]
 			if ok {
 				if v, ok := tv.(dataList)[0][fromKey]; ok {
-					utils.DeepMustSet(item, asKey, v)
+					DeepMustSet(item, asKey, v)
 					continue
 				}
 			}
 		}
 		cb, ok := defVal.(DefaultFunc)
 		if ok {
-			utils.DeepMustSet(item, asKey, cb(item))
+			DeepMustSet(item, asKey, cb(item))
 		} else {
-			utils.DeepMustSet(item, asKey, defVal)
+			DeepMustSet(item, asKey, defVal)
 		}
 	}
 	return NewCollect(srcData)
@@ -129,7 +128,7 @@ func (c Collection) One(cb func(idx int, t map[string]interface{}) bool) Collect
 	srcData := c.ToMapArray()
 	for i, item := range srcData {
 		if cb(i, item) {
-			return NewCollect([]utils.H{item})
+			return NewCollect([]H{item})
 		}
 	}
 	return NewCollect()
