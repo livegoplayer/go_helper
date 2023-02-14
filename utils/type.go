@@ -328,6 +328,7 @@ func AsH(v interface{}) H {
 	}
 	return nil
 }
+
 func AsStringSlice(v interface{}) []string {
 	slice := reflect.ValueOf(v)
 	if !slice.IsValid() {
@@ -341,4 +342,11 @@ func AsStringSlice(v interface{}) []string {
 		ret = append(ret, AsString(slice.Index(i).Addr().Elem().Interface()))
 	}
 	return ret
+}
+
+func Bool2Int(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
 }

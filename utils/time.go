@@ -217,3 +217,14 @@ func GetDayHourNum(t int64) int {
 func GetOneDaySec(t int64) int64 {
 	return t % int64(Day)
 }
+
+// GetZeroTime 获取某一天的0点时间
+func GetZeroTime(d time.Time) time.Time {
+	return time.Date(d.Year(), d.Month(), d.Day(), 0, 0, 0, 0, d.Location())
+}
+
+// GetTimeSeconds 获取当前 时分秒 的秒数
+func GetTimeSeconds() int64 {
+	now := time.Now()
+	return int64(now.Hour()*3600 + now.Minute()*60 + now.Second())
+}

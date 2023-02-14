@@ -2,8 +2,8 @@ package collect
 
 import (
 	"fmt"
-	"github.com/livegoplayer/go_helper/collect/collection"
-	"github.com/livegoplayer/go_helper/structs"
+	"github.com/chenhg5/collection"
+	"github.com/fatih/structs"
 	"github.com/livegoplayer/go_helper/utils"
 	"reflect"
 )
@@ -43,7 +43,7 @@ func (c Collection) WithGroupBy(asKey string, list dataList, localKey string, ar
 	srcData := c.ToMapArray()
 	withData := NewCollect(list).GroupBy(foreign).ToMap()
 	for _, item := range srcData {
-		v, ok := collection.DeepGet(item, localKey)
+		v, ok := utils.DeepGet(item, localKey)
 		if ok {
 			tv, ok := withData[fmt.Sprintf("%v", v)]
 			if ok {
@@ -66,7 +66,7 @@ func (c Collection) WithKeyBy(asKey string, list dataList, localKey string, argu
 	srcData := c.ToMapArray()
 	withData := NewCollect(list).KeyBy(foreign).ToMap()
 	for _, item := range srcData {
-		v, ok := collection.DeepGet(item, localKey)
+		v, ok := utils.DeepGet(item, localKey)
 		if ok {
 			tv, ok := withData[fmt.Sprintf("%v", v)]
 			if ok {
@@ -89,7 +89,7 @@ func (c Collection) WithPut(asKey string, fromKey string, list dataList, localKe
 	srcData := c.ToMapArray()
 	withData := NewCollect(list).KeyBy(foreign).ToMap()
 	for _, item := range srcData {
-		v, ok := collection.DeepGet(item, localKey)
+		v, ok := utils.DeepGet(item, localKey)
 		if ok {
 			tv, ok := withData[fmt.Sprintf("%v", v)]
 			if ok {
