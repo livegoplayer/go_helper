@@ -111,6 +111,10 @@ func ToMap(in interface{}) map[string]interface{} {
 	return collect.NewCollect(in).ToMap()
 }
 
+func ToMapArray(in interface{}) []map[string]interface{} {
+	return collect.NewCollect(in).ToMapArray()
+}
+
 func DeepGetMust(m map[string]interface{}, key string) interface{} {
 	v, ok := DeepGet(m, key)
 	if !ok {
