@@ -17,9 +17,7 @@ type dataList = []map[string]interface{}
 
 type DefaultFunc = func(map[string]interface{}) interface{}
 
-func NewCollect(st interface{}, tagName string) Collection {
-	var v interface{}
-	v = st
+func NewCollect(v interface{}, tagName string) Collection {
 	mapArray, ok := v.(dataList)
 	if !ok {
 		slice := reflect.ValueOf(v)
